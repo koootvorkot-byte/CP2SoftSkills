@@ -2,6 +2,7 @@
 #include <fstream>
 #include <clocale>
 #include <string>
+#include <windows.h>
 
 using namespace std;
 
@@ -11,6 +12,7 @@ struct Cell {
 };
 
 void inFile(Cell*** book, int page, int rows, int cols){
+    cin.ignore();
     string filename;
     cout << "Введіть назву файлу:";
     getline(cin, filename);
@@ -124,9 +126,9 @@ void Render(Cell** gametble, int rows, int cols) {
             cout << "Game over" << endl;
             break;
         }
-        cout << "\n\n\n\n\n\n\n\n\n\n\n\n\v\v\v\v\v\v\v\v\n\n\n\n\n\n\n\n\n\n\n\n\v\v\v\v\v\v\v\v" << endl;
+        cout << "\n\n\n\n\n\n\n\n\n" << endl;
 
-        //Sleep(150);
+        Sleep(700);
     }
     char ans = 0;
     cout << "Would you like to save your grid? (y/n)";

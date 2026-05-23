@@ -155,7 +155,10 @@ void Render(Cell** gametble, int rows, int cols) {
     }
     delete[] history;
 }
+void inFile(Cell*** History, int tbles, int rows, int cols) {
 
+
+};
 int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
@@ -173,7 +176,7 @@ int main() {
     }
 
     while (true) {
-        cout << "Введіть кількість столбцов поля: ";
+        cout << "Введіть кількість столбців поля: ";
         if (cin >> incols && incols > 0) {
             break;
         }

@@ -1,2 +1,9 @@
 /СР2SS.sln
 /.vs
+.vscode/tasks.json
+./vscode
+.vscode/settings.json
+.vscode
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user

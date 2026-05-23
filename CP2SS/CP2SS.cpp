@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <clocale>
+#include <string>
 
 using namespace std;
 
@@ -10,9 +11,9 @@ struct Cell {
 };
 
 void inFile(Cell*** book, int page, int rows, int cols){
-    char* filename;
+    string filename;
     cout << "Введіть назву файлу:";
-    cin >> filename;
+    getline(cin, filename);
     ofstream outfs(filename);
     if(!outfs){
         cout << "Сталась помикла, зміни не будуть збережені.";

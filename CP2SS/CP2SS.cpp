@@ -28,7 +28,7 @@ void inFile(Cell*** book, int page, int rows, int cols){
                 }
                 outfs << endl;
             }
-            outfs << "\n\n\n\n" << endl;
+            outfs << "\n\n" << endl;
         }
     }
     outfs.close();
@@ -89,7 +89,7 @@ void Render(Cell** gametble, int rows, int cols) {
     const int maxHistory = 200;
     int currentStep = 0;
 
-    Cell*** history = new Cell * *[maxHistory];
+    Cell*** history = new Cell **[maxHistory];
     for (int h = 0; h < maxHistory; h++) {
         history[h] = new Cell * [rows];
         for (int i = 0; i < rows; i++) {
@@ -104,7 +104,7 @@ void Render(Cell** gametble, int rows, int cols) {
     }
 
     while (true) {
-        currentStep++;
+        ++currentStep;
         int check = 0;
         for(int i = 0; i < rows; i++){
             for(int j = 0; j < cols; j++){
@@ -117,7 +117,7 @@ void Render(Cell** gametble, int rows, int cols) {
         for(int i = 0; i < rows; i++){
             for(int j = 0; j< cols; j++){
                 cout << (gametble[i][j].alive == 1 ? '1' : '.');
-                history[currentStep][i][j];
+                history[currentStep][i][j] = gametble[i][j];
             }
             cout << endl;
         }

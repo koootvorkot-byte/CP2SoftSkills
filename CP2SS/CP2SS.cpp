@@ -117,7 +117,7 @@ void Render(Cell** gametble, int rows, int cols) {
         for(int i = 0; i < rows; i++){
             for(int j = 0; j< cols; j++){
                 cout << (gametble[i][j].alive == 1 ? '1' : '.');
-                history[currentStep][i][j];
+                history[currentStep][i][j] = gametble[i][j];
             }
             cout << endl;
         }
@@ -136,6 +136,9 @@ void Render(Cell** gametble, int rows, int cols) {
     if(ans == 'y' || ans == 'Y'){
         inFile(history, maxHistory, rows, cols);
     }
+    if (ans == 'n' || ans == 'N') {
+        cout << "Добре" << endl;
+    }
 
     for (int h = 0; h < maxHistory; h++) {
         for (int i = 0; i < rows; i++) {
@@ -147,9 +150,9 @@ void Render(Cell** gametble, int rows, int cols) {
 }
 
 int main() {
-    setlocale(LC_ALL, "ua_UK.UTF-8");
-    //SetConsoleCP(1251);
-    //SetConsoleOutputCP(1251);
+    //setlocale(LC_ALL, "ua_UK.UTF-8");
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
 
     int inrows, incols;
 
@@ -164,7 +167,7 @@ int main() {
     }
 
     while (true) {
-        cout << "Введіть кількість столбцов поля: ";
+        cout << "Введіть кількість стовбців поля: ";
         if (cin >> incols && incols > 0) {
             break;
         }

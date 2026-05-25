@@ -14,11 +14,11 @@ struct Cell {
 void inFile(Cell*** book, int page, int rows, int cols){
     cin.ignore();
     string filename;
-    cout << "Введіть назву файлу:";
+    cout << "Enter file name::";
     getline(cin, filename);
     ofstream outfs(filename);
     if(!outfs){
-        cout << "Сталась помикла, зміни не будуть збережені.";
+        cout << "A mistake has been made, changes will not be saved.";
         return;
     } else{
         for(int i = 0; i < page; i++){
@@ -137,7 +137,7 @@ void Render(Cell** gametble, int rows, int cols) {
         inFile(history, maxHistory, rows, cols);
     }
     if (ans == 'n' || ans == 'N') {
-        cout << "Добре" << endl;
+        cout << "Ok" << endl;
     }
 
     for (int h = 0; h < maxHistory; h++) {
@@ -150,28 +150,28 @@ void Render(Cell** gametble, int rows, int cols) {
 }
 
 int main() {
-    //setlocale(LC_ALL, "ua_UK.UTF-8");
-    SetConsoleCP(1251);
-    SetConsoleOutputCP(1251);
+    setlocale(LC_ALL, "ua_UK.UTF-8");
+    //SetConsoleCP(1251);
+    //SetConsoleOutputCP(1251);
 
     int inrows, incols;
 
     while (true) {
-        cout << "Введіть кількість строк поля: ";
+        cout << "Enter the number of lines in the field: ";
         if (cin >> inrows && inrows > 0) {
             break;
         }
-        cout << "Помилка! Введіть коректне число більше 0.\n";
+        cout << "Error! Please enter a valid number greater than 0\n";
         cin.clear();
         cin.ignore(10000, '\n');
     }
 
     while (true) {
-        cout << "Введіть кількість стовбців поля: ";
+        cout << "Enter the number of columns for the field: ";
         if (cin >> incols && incols > 0) {
             break;
         }
-        cout << "Помилка! Введіть коректне число більше 0.\n";
+        cout << "Error! Please enter a valid number greater than 0.\n";
         cin.clear();
         cin.ignore(10000, '\n');
     }
@@ -190,15 +190,15 @@ int main() {
 
     int initialCells;
     while (true) {
-        cout << "Введіть кількість початкових живих клітин (розмір фігури): ";
+        cout << "Enter the number of initial live cells (shape size):";
         if (cin >> initialCells && initialCells >= 0) {
             if (initialCells <= inrows * incols) {
                 break;
             }
-            cout << "Помилка! Клітин не може бути більше, ніж розмір самого поля (" << inrows * incols << ").\n";
+            cout << "Error! There cannot be more cells than the size of the field itself (" << inrows * incols << ").\n";
         }
         else {
-            cout << "Помилка! Введіть коректне число (0 або більше).\n";
+            cout << "Error! Please enter a valid number (0 or more).\n";
             cin.clear();
             cin.ignore(10000, '\n');
         }
@@ -207,18 +207,18 @@ int main() {
     for (int k = 0; k < initialCells; k++) {
         int r, c;
         while (true) {
-            cout << "Введіть координати клітини " << k + 1 << " (строка та стовбець через пробіл от 1 до максимуму): ";
+            cout << "Enter cell coordinates " << k + 1 << " (row and column separated by space from 1 to maximum): ";
             if (cin >> r >> c) {
                 if (r >= 1 && r <= inrows && c >= 1 && c <= incols) {
                     fiela[r - 1][c - 1].alive = 1;
                     break;
                 }
                 else {
-                    cout << "Помилка! Вихід за межі поля. Спробуйте ще раз.\n";
+                    cout << "Error! Out of bounds. Try again.\n";
                 }
             }
             else {
-                cout << "Помилка! Вводьте тільки числа.\n";
+                cout << "Error! Enter only numbers.\n";
                 cin.clear();
                 cin.ignore(10000, '\n');
             }

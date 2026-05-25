@@ -7,3 +7,5 @@
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
+*.exe
+*.txt

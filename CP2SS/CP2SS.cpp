@@ -1,5 +1,6 @@
 ﻿#include <iostream>
-#include <windows.h> 
+#include <fstream>
+
 
 using namespace std;
 
@@ -8,27 +9,56 @@ struct Cell {
     short int neighs = 0;
 };
 
-Cell** next(Cell** pole, int rows, int cols) {
-    Cell** tempField = new Cell * [rows];
+void inFile(Cell*** book, int page, int rows, int cols){
+    unsigned int check = 0;
+    cout << "Exporting your history...";
+    ofstream outfs("History.txt");
+    if(!outfs){
+        cout << "An error occured, history will not be saved.";
+        return;
+    } else{
+        for(int i = 0; i < page; i++){
+            if(check == rows*cols){
+                break;
+            }
+            check = 0;
+            for(int j = 0; j < rows; j++){
+                for(int k = 0; k < cols; k++){
+                    outfs << (book[i][j][k].alive == 0 ? '.' : '1');
+                    if(book[i][j][k].alive == 0)
+                        ++check;
+                }
+                outfs << endl;
+            }
+            outfs << "\n\n" << endl;
+        }
+    }
+    outfs.close();
+    return;
+}
+
+Cell** next(Cell** pole, int rows, int cols){
+ Cell** tempField = new Cell *[rows];
     for (int i = 0; i < rows; i++) {
         tempField[i] = new Cell[cols];
     }
+
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            int live_neighs = 0;
+            tempField[i][j].neighs = 0;
+
             for (int il = i - 1; il <= i + 1; il++) {
                 for (int jl = j - 1; jl <= j + 1; jl++) {
                     if (il >= 0 && il < rows && jl >= 0 && jl < cols) {
                         if (!(il == i && jl == j) && pole[il][jl].alive == 1) {
-                            live_neighs++;
+                            tempField[i][j].neighs++;
                         }
                     }
                 }
             }
 
-            tempField[i][j].neighs = live_neighs;
             if (pole[i][j].alive == 1) {
-                if (live_neighs < 2 || live_neighs > 3) {
+                if (tempField[i][j].neighs < 2 || tempField[i][j].neighs > 3) {
                     tempField[i][j].alive = 0;
                 }
                 else {
@@ -36,7 +66,7 @@ Cell** next(Cell** pole, int rows, int cols) {
                 }
             }
             else {
-                if (live_neighs == 3) {
+                if (tempField[i][j].neighs == 3) {
                     tempField[i][j].alive = 1;
                 }
                 else {
@@ -58,10 +88,10 @@ Cell** next(Cell** pole, int rows, int cols) {
 }
 
 void Render(Cell** gametble, int rows, int cols) {
-    const int maxHistory = 60;
+    const unsigned int maxHistory = 255;
     int currentStep = 0;
-    bool movingForward = true;
-    Cell*** history = new Cell * *[maxHistory];
+
+    Cell*** history = new Cell **[maxHistory];
     for (int h = 0; h < maxHistory; h++) {
         history[h] = new Cell * [rows];
         for (int i = 0; i < rows; i++) {
@@ -75,77 +105,41 @@ void Render(Cell** gametble, int rows, int cols) {
         }
     }
 
-    Cell** NxtFrame = new Cell * [rows];
-    for (int i = 0; i < rows; i++) {
-        NxtFrame[i] = new Cell[cols];
-    }
-
     while (true) {
-        system("cls");
+        ++currentStep;
+        int check = 0;
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < cols; j++){
+                if(gametble[i][j].alive == 0){
+                    ++check;
+                }
+            }
+        }
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j< cols; j++){
                 cout << (gametble[i][j].alive == 1 ? '1' : '.');
+                if(currentStep < maxHistory)
+                    history[currentStep][i][j] = gametble[i][j];
             }
             cout << endl;
         }
-
-        cout << "\nКрок: " << currentStep << " / " << maxHistory - 1;
-        if (movingForward) {
-            cout << " [ Процес: ВПЕРЕД ]" << endl;
+		gametble = next(gametble, rows, cols);
+        if(check == rows*cols){
+            cout << "Game over" << endl;
+            break;
         }
-        else {
-            cout << " [ Процес: НАЗАД (Зворотній) ]" << endl;
-        }
+        cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" << endl;
 
-        Sleep(150);
-
-        if (movingForward) {
-            if (currentStep >= maxHistory - 1) {
-                movingForward = false;
-                cout << "\n--- РЕВЕРС! Запуск зворотнього процесу ---" << endl;
-                Sleep(1000);
-                continue;
-            }
-
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    NxtFrame[i][j] = gametble[i][j];
-                }
-            }
-
-            NxtFrame = next(NxtFrame, rows, cols);
-            currentStep++;
-
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    history[currentStep][i][j] = NxtFrame[i][j];
-                    gametble[i][j] = NxtFrame[i][j];
-                }
-            }
-        }
-        else {
-            if (currentStep <= 0) {
-                movingForward = true;
-                cout << "\n--- Початок достигнуто! Запуск спочатку ---" << endl;
-                Sleep(1000);
-                continue;
-            }
-
-            currentStep--;
-
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    gametble[i][j] = history[currentStep][i][j];
-                }
-            }
-        }
     }
-
-    for (int i = 0; i < rows; i++) {
-        delete[] NxtFrame[i];
+    char ans = 0;
+    cout << "Would you like to save your grid? (y/n)";
+    cin >> ans;
+    if(ans == 'y' || ans == 'Y'){
+        inFile(history, maxHistory, rows, cols);
+    } else{
+        cout << "Ok." << endl;
     }
-    delete[] NxtFrame;
 
     for (int h = 0; h < maxHistory; h++) {
         for (int i = 0; i < rows; i++) {
@@ -155,37 +149,32 @@ void Render(Cell** gametble, int rows, int cols) {
     }
     delete[] history;
 }
-void inFile(Cell*** History, int tbles, int rows, int cols) {
 
-
-};
 int main() {
-    SetConsoleCP(1251);
-    SetConsoleOutputCP(1251);
 
     int inrows, incols;
 
     while (true) {
-        cout << "Введіть кількість строк поля: ";
+        cout << "Enter the number of lines in the field: ";
         if (cin >> inrows && inrows > 0) {
             break;
         }
-        cout << "Помилка! Введіть коректне число більше 0.\n";
+        cout << "Error! Please enter a valid number greater than 0\n";
         cin.clear();
         cin.ignore(10000, '\n');
     }
 
     while (true) {
-        cout << "Введіть кількість столбців поля: ";
+        cout << "Enter the number of columns for the field: ";
         if (cin >> incols && incols > 0) {
             break;
         }
-        cout << "Помилка! Введіть коректне число більше 0.\n";
+        cout << "Error! Please enter a valid number greater than 0.\n";
         cin.clear();
         cin.ignore(10000, '\n');
     }
 
-    Cell** fiela = new Cell * [inrows];
+    Cell** fiela = new Cell *[inrows];
     for (int i = 0; i < inrows; i++) {
         fiela[i] = new Cell[incols];
     }
@@ -199,15 +188,15 @@ int main() {
 
     int initialCells;
     while (true) {
-        cout << "Введіть кількість початкових живих клітин (розмір фігури): ";
+        cout << "Enter the number of initial live cells (shape size):";
         if (cin >> initialCells && initialCells >= 0) {
             if (initialCells <= inrows * incols) {
                 break;
             }
-            cout << "Помилка! Клітин не може бути більше, ніж розмір самого поля (" << inrows * incols << ").\n";
+            cout << "Error! There cannot be more cells than the size of the field itself (" << inrows * incols << ").\n";
         }
         else {
-            cout << "Помилка! Введіть коректне число (0 або більше).\n";
+            cout << "Error! Please enter a valid number (0 or more).\n";
             cin.clear();
             cin.ignore(10000, '\n');
         }
@@ -216,18 +205,18 @@ int main() {
     for (int k = 0; k < initialCells; k++) {
         int r, c;
         while (true) {
-            cout << "Введіть координати клітини " << k + 1 << " (строка та стовбець через пробіл от 1 до максимуму): ";
+            cout << "Enter cell coordinates " << k + 1 << " (row and column separated by space from 1 to " << inrows << "/" << incols <<"): ";
             if (cin >> r >> c) {
                 if (r >= 1 && r <= inrows && c >= 1 && c <= incols) {
                     fiela[r - 1][c - 1].alive = 1;
                     break;
                 }
                 else {
-                    cout << "Помилка! Вихід за межі поля. Спробуйте ще раз.\n";
+                    cout << "Error! Out of bounds. Try again.\n";
                 }
             }
             else {
-                cout << "Помилка! Вводьте тільки числа.\n";
+                cout << "Error! Enter only numbers.\n";
                 cin.clear();
                 cin.ignore(10000, '\n');
             }

@@ -11,19 +11,20 @@ struct Cell {
     short int neighs = 0;
 };
 
-void inFile(Cell*** book, int page, int rows, int cols){
+void inFile(Cell*** book, int page, int rows, int cols) {
     cin.ignore();
     string filename;
     cout << "Enter file name::";
     getline(cin, filename);
     ofstream outfs(filename);
-    if(!outfs){
+    if (!outfs) {
         cout << "A mistake has been made, changes will not be saved.";
         return;
-    } else{
-        for(int i = 0; i < page; i++){
-            for(int j = 0; j < rows; j++){
-                for(int k = 0; k < cols; k++){
+    }
+    else {
+        for (int i = 0; i < page; i++) {
+            for (int j = 0; j < rows; j++) {
+                for (int k = 0; k < cols; k++) {
                     outfs << (book[i][j][k].alive == 0 ? '.' : '1');
                 }
                 outfs << endl;
@@ -35,8 +36,8 @@ void inFile(Cell*** book, int page, int rows, int cols){
     return;
 }
 
-Cell** next(Cell** pole, int rows, int cols){
- Cell** tempField = new Cell * [rows];
+Cell** next(Cell** pole, int rows, int cols) {
+    Cell** tempField = new Cell * [rows];
     for (int i = 0; i < rows; i++) {
         tempField[i] = new Cell[cols];
     }
@@ -89,7 +90,7 @@ void Render(Cell** gametble, int rows, int cols) {
     const int maxHistory = 200;
     int currentStep = 0;
 
-    Cell*** history = new Cell **[maxHistory];
+    Cell*** history = new Cell * *[maxHistory];
     for (int h = 0; h < maxHistory; h++) {
         history[h] = new Cell * [rows];
         for (int i = 0; i < rows; i++) {
@@ -106,23 +107,23 @@ void Render(Cell** gametble, int rows, int cols) {
     while (true) {
         ++currentStep;
         int check = 0;
-        for(int i = 0; i < rows; i++){
-            for(int j = 0; j < cols; j++){
-                if(gametble[i][j].alive == 0){
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (gametble[i][j].alive == 0) {
                     ++check;
                 }
             }
         }
 
-        for(int i = 0; i < rows; i++){
-            for(int j = 0; j< cols; j++){
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 cout << (gametble[i][j].alive == 1 ? '1' : '.');
                 history[currentStep][i][j] = gametble[i][j];
             }
             cout << endl;
         }
-		gametble = next(gametble, rows, cols);
-        if(check == rows*cols){
+        gametble = next(gametble, rows, cols);
+        if (check == rows * cols) {
             cout << "Game over" << endl;
             break;
         }
@@ -133,7 +134,7 @@ void Render(Cell** gametble, int rows, int cols) {
     char ans = 0;
     cout << "Would you like to save your grid? (y/n)";
     cin >> ans;
-    if(ans == 'y' || ans == 'Y'){
+    if (ans == 'y' || ans == 'Y') {
         inFile(history, maxHistory, rows, cols);
     }
     if (ans == 'n' || ans == 'N') {
